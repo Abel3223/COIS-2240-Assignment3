@@ -18,57 +18,74 @@ public class VehicleRentalApp {
             scanner.nextLine();
 
             switch (choice) {
+
+                //ADD VEHICLE
+ 
                 case 1:
-                    System.out.println("  1: Car\n" + 
-                                       "  2: Minibus\n" + 
+                    System.out.println("  1: Car\n" +
+                                       "  2: Minibus\n" +
                                        "  3: Pickup Truck");
                     int type = scanner.nextInt();
                     scanner.nextLine();
 
                     System.out.print("Enter license plate: ");
                     String plate = scanner.nextLine().toUpperCase();
+
                     System.out.print("Enter make: ");
                     String make = scanner.nextLine();
+
                     System.out.print("Enter model: ");
                     String model = scanner.nextLine();
+
                     System.out.print("Enter year: ");
                     int year = scanner.nextInt();
                     scanner.nextLine();
 
-                    Vehicle vehicle;
+                    Vehicle vehicle = null;
+
                     if (type == 1) {
                         System.out.print("Enter number of seats: ");
                         int seats = scanner.nextInt();
+                        scanner.nextLine();
+
                         vehicle = new Car(make, model, year, seats);
-                        System.out.println("Car added successfully.");
-                    } 
+                    }
                     else if (type == 2) {
                         System.out.print("Is accessible? (true/false): ");
                         boolean isAccessible = scanner.nextBoolean();
+                        scanner.nextLine();
+
                         vehicle = new Minibus(make, model, year, isAccessible);
-                        System.out.println("Minibus added successfully.");
-                    } 
+                    }
                     else if (type == 3) {
                         System.out.print("Enter the cargo size: ");
                         double cargoSize = scanner.nextDouble();
                         scanner.nextLine();
+
                         System.out.print("Has trailer? (true/false): ");
                         boolean hasTrailer = scanner.nextBoolean();
+                        scanner.nextLine();
+
                         vehicle = new PickupTruck(make, model, year, cargoSize, hasTrailer);
-                        System.out.println("Pickup Truck added successfully.");
-                    } 
-                    else {
-                        vehicle = null;
                     }
 
-                    if (vehicle != null) {
-                        vehicle.setLicensePlate(plate);
-                        rentalSystem.addVehicle(vehicle);
-                    } else {
-                        System.out.println("Vehicle not added successfully.");
+                    if (vehicle == null) {
+                        System.out.println("Invalid vehicle type. Vehicle not added.");
+                        break;
                     }
+
+                    vehicle.setLicensePlate(plate);
+
+                    if (rentalSystem.addVehicle(vehicle)) {
+                        System.out.println("Vehicle added successfully.");
+                    } else {
+                        System.out.println("Vehicle NOT added — duplicate license plate.");
+                    }
+
                     break;
 
+                //ADD CUSTOMER
+                    
                 case 2:
                     System.out.print("Enter customer ID: ");
                     int cid = scanner.nextInt();
@@ -77,10 +94,16 @@ public class VehicleRentalApp {
                     System.out.print("Enter name: ");
                     String cname = scanner.nextLine();
 
-                    rentalSystem.addCustomer(new Customer(cid, cname));
-                    System.out.println("Customer added successfully.");
+                    if (rentalSystem.addCustomer(new Customer(cid, cname))) {
+                        System.out.println("Customer added successfully.");
+                    } else {
+                        System.out.println("Customer NOT added — duplicate ID.");
+                    }
+
                     break;
 
+                //RENT
+                
                 case 3:
                     rentalSystem.displayVehicles(Vehicle.VehicleStatus.Available);
 
@@ -108,6 +131,7 @@ public class VehicleRentalApp {
                     rentalSystem.rentVehicle(vehicleToRent, customerToRent, LocalDate.now(), rentAmount);
                     break;
 
+                
                 case 4:
                     rentalSystem.displayVehicles(Vehicle.VehicleStatus.Rented);
 
@@ -135,14 +159,14 @@ public class VehicleRentalApp {
                     rentalSystem.returnVehicle(vehicleToReturn, customerToReturn, LocalDate.now(), returnFees);
                     break;
 
+                //DISPLAY AVAILABLE VEHICLES
+                    
                 case 5:
                     rentalSystem.displayVehicles(Vehicle.VehicleStatus.Available);
                     break;
-
                 case 6:
                     rentalSystem.displayRentalHistory();
                     break;
-
                 case 0:
                     scanner.close();
                     System.exit(0);

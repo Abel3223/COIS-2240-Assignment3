@@ -1,6 +1,9 @@
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDate;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
+
 
 
 public class VehicleRentalTest {
@@ -63,4 +66,24 @@ public class VehicleRentalTest {
         boolean returnFail = system.returnVehicle(testCar, testCustomer, LocalDate.now(), 0);
         assertFalse(returnFail);
     }
+    
+    // TASK 2.3
+    
+    @Test
+    public void testSingletonRentalSystem() throws Exception {
+
+        Constructor<RentalSystem> constructor =
+                RentalSystem.class.getDeclaredConstructor();
+
+        int modifiers = constructor.getModifiers();
+        assertTrue(Modifier.isPrivate(modifiers),
+                "RentalSystem constructor should be PRIVATE (Singleton)");
+
+        RentalSystem instance = RentalSystem.getInstance();
+        assertNotNull(instance);
+
+        RentalSystem instance2 = RentalSystem.getInstance();
+        assertSame(instance, instance2, "getInstance() should return the same Singleton instance");
+    }
+
 }
